@@ -1,42 +1,232 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      html,
-      body {
-        font-family: Arial, sans-serif;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
 
-      #map {
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script>
-      var map;
-      function initMap() {
-        // Constructor creates a new map - only center and zoom are required.
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 40.7413549, lng: -73.9980244},
-          zoom: 13
-        });
-        var tribeca = {lat: 40.719526, lng: -74.0089934};
+<head>
+  <style>
+    html,
+    body {
+      font-family: Arial, sans-serif;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <script>
+    var map;
+
+    var markers = [];
+
+    function initMap() {
+      // Constructor creates a new map - only center and zoom are required.
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 40.7413549, lng: -73.9980244 },
+        zoom: 13
+      });
+      /* Creating a new marker
+      making a object variable of the location with lattitude and longitude; 
+      then we create the marker - 
+      new google.maps.Marker({
+        it takes in 
+        position : the object variable,
+        map: map,
+        title: "My Home"
+      })  */
+      var locations = [
+        { title: 'Park Ave Penthouse', location: { lat: 40.7713024, lng: -73.9632393 } },
+        { title: 'Chelsea Loft', location: { lat: 40.7444883, lng: -73.9949465 } },
+        { title: 'Union Square Open Floor Plan', location: { lat: 40.7347062, lng: -73.9895759 } },
+        { title: 'East Village Hip Studio', location: { lat: 40.7281777, lng: -73.984377 } },
+        { title: 'TriBeCa Artsy Bachelor Pad', location: { lat: 40.7195264, lng: -74.0089934 } },
+        { title: 'Chinatown Homey Space', location: { lat: 40.7180628, lng: -73.9961237 } }
+      ];
+
+      /* We will loop over this bunch of locations and create variables for position and title using locations.title, locations.title
+       we will create a marker using position as the position and title as the title animation is just google.maps.Animation.BOUNCE // DROP
+       id: as the id of the forloop. 
+       then we push the markers to markersArray. 
+       we add an eventListener on all the markers for click  and calling a new function populateInfoWindow 
+       populateInfoWindow will check if there is already a infoWindow open on the marker. if not open up one and add a div  with the title. 
+       and listen to closeClick listener which will then setMarker to null. i.e. close it.
+       we want to redesign the bounds of the map by making a var bounds = new google.maps.LatLngBounds(). 
+       bounds.extend(marker.position)
+       */
+
+      var largeInfoWindow = new google.maps.InfoWindow();
+      var bounds = new google.maps.LatLngBounds();
+      for (var i = 0; i < locations.length; i++) {
+        var position = locations[i].location;
+        var title = locations[i].title;
+
         var marker = new google.maps.Marker({
-          position: tribeca,
           map: map,
-          title: 'First Marker!'
+          position: position,
+          title: title,
+          animation: google.maps.Animation.BOUNCE,
+          id: i
         });
+
+        markers.push(marker);
+        bounds.extend(marker.position);
+        marker.addListener('click', function () {
+          populateInfoWindow(this, largeInfoWindow);
+        })
       }
-    </script>
 
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&v=3&callback=initMap">
-    </script>
+      function populateInfoWindow(marker, infoWindow) {
+        //check to make sure the infowindow is not already opened on this marker.
+        if (infoWindow.marker != marker) {
+          infoWindow.marker = marker;
+          infoWindow.setContent('<div>' + marker.title + '</div>');
+          infoWindow.open(map, marker);
+          //Make sure the marker property is cleared if the infowindow is closed.
+          infoWindow.addListener('closeclick', function () {
+            infoWindow.setMarker = null;
+          })
+        }
+      }
+      map.fitBounds(bounds);
+    }
 
-  </body>
+  </script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdTjuOXrYWeil6h7p7opnLIst5hBMyt3E&v=3&callback=initMap">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+
+</body>
+
 </html>
